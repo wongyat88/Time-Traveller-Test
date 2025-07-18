@@ -1,0 +1,15 @@
+{
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "typescript.format.semicolons": "remove",
+    "[typescript][json][css][html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.formatOnSave": false
+    },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "files.insertFinalNewline": true
+}

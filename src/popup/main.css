@@ -1,0 +1,82 @@
+:root {
+    --primary-color: #6060f4;
+    --text-color: #494949;
+    --secondary-text-color: #9f9f9f;
+    --border-color: #dcdcdc;
+    --error-color: #8f4242;
+    --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+html,
+body,
+p,
+ul,
+dl {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background-color: white;
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: 0.8em;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    /* Chrome overrides font family and size on body, so we need to set it here */
+    font-family: var(--font-family);
+    font-size: 1rem;
+    min-width: 210px;
+    width: fit-content;
+    padding: 15px;
+}
+
+@media (min-width: 400px) {
+    html {
+        font-size: 1em;
+    }
+
+    body {
+        width: auto;
+    }
+}
+
+label {
+    width: 100%;
+}
+
+input,
+button {
+    font-family: var(--font-family);
+    font-size: 1rem;
+}
+
+button {
+    line-height: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 7px 10px;
+    background: white;
+    color: var(--text-color);
+    transition: all 0.3s ease-in;
+}
+
+button:disabled {
+    background: white !important;
+    color: var(--secondary-text-color) !important;
+}
+
+button:not(:disabled):hover {
+    filter: drop-shadow(0 0 2px var(--primary-color));
+    cursor: pointer;
+}
+
+input:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--primary-color);
+}

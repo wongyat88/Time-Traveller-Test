@@ -1,0 +1,89 @@
+{
+    "manifest_version": 3,
+    "name": "Time Travel",
+    "description": "__MSG_extensionDescription__",
+    "version": "__VERSION__",
+    "version_name": "__VERSION_NAME__",
+    "default_locale": "en",
+    "minimum_chrome_version": "109",
+    "icons": {
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png"
+    },
+    "background": {
+        "service_worker": "scripts/worker.js",
+        "type": "module"
+    },
+    "action": {
+        "default_icon": {
+            "16": "images/icon-16.png",
+            "32": "images/icon-32.png",
+            "48": "images/icon-48.png",
+            "128": "images/icon-128.png"
+        },
+        "default_popup": "popup/main.html"
+    },
+    "permissions": ["tabs", "activeTab", "scripting", "storage"],
+    "host_permissions": [
+        "http://mdpvres/*",
+        "http://mdpv2/imma/*",
+        "http://r2drill3:9090/apar5/*",
+        "http://swirlsa/*",
+        "http://swirlsa:8080/*",
+        "http://swirlsa1:8080/*",
+        "http://aamc-mon-01b/*",
+        "http://r2drill3:82/tctool/Anemogram_TC/*",
+        "http://r2drill3:82/tctool/dvorak/*",
+        "http://192.168.143.64/wxsim_data/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "http://mdpvres/*",
+                "http://mdpv2/imma/*",
+                "http://r2drill3:9090/apar5/*",
+                "http://swirlsa/*",
+                "http://swirlsa:8080/*",
+                "http://swirlsa1:8080/*",
+                "http://aamc-mon-01b/*",
+                "http://r2drill3:82/tctool/Anemogram_TC/*",
+                "http://r2drill3:82/tctool/dvorak/*",
+                "http://192.168.143.64/wxsim_data/*"
+            ],
+            "js": ["scripts/replace_date.js"],
+            "all_frames": true,
+            "run_at": "document_start",
+            "world": "MAIN"
+        },
+        {
+            "matches": [
+                "http://mdpvres/*",
+                "http://mdpv2/imma/*",
+                "http://r2drill3:9090/apar5/*",
+                "http://swirlsa/*",
+                "http://swirlsa:8080/*",
+                "http://swirlsa1:8080/*",
+                "http://aamc-mon-01b/*",
+                "http://r2drill3:82/tctool/Anemogram_TC/*",
+                "http://r2drill3:82/tctool/dvorak/*",
+                "http://192.168.143.64/wxsim_data/*"
+            ],
+            "js": ["scripts/send_active.js"],
+            "all_frames": false,
+            "run_at": "document_start",
+            "world": "ISOLATED"
+        },
+        {
+            "matches": ["<all_urls>"],
+            "js": ["scripts/api_bridge.js"],
+            "all_frames": false,
+            "run_at": "document_start",
+            "world": "ISOLATED"
+        }
+    ],
+    "content_security_policy": {
+        "extension_pages": "default-src 'self'; img-src 'self' data:;"
+    }
+}

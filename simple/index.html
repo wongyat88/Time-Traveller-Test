@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Time Travel - Fake Date & Time</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>🕰️ Time Travel</h1>
+                <p class="subtitle">Fake the current date and time in JavaScript</p>
+            </header>
+
+            <main>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="dateInput">Date & Time:</label>
+                        <div class="input-group">
+                            <input type="text" id="dateInput" placeholder="2025-04-27 12:40" />
+                            <button type="button" id="helpBtn" class="help-btn">?</button>
+                        </div>
+                        <small class="help-text">Examples: 2025-04-27 12:40, 2025-04-27T12:40Z, 1731493140025</small>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="applyBtn" class="btn btn-primary">Apply Fake Date</button>
+                        <button type="button" id="resetBtn" class="btn btn-secondary">Reset to Real Time</button>
+                    </div>
+
+                    <hr />
+
+                    <div class="controls">
+                        <div class="toggle-group">
+                            <label class="toggle">
+                                <input type="checkbox" id="enableToggle" />
+                                <span class="slider"></span>
+                                <span class="label">Enable Fake Date</span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-group">
+                            <label class="toggle">
+                                <input type="checkbox" id="stopClockToggle" />
+                                <span class="slider"></span>
+                                <span class="label">Stop Clock</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="status">
+                        <div class="status-item">
+                            <span class="status-label">Current Fake Date:</span>
+                            <span id="currentDate" class="status-value">Not set</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Status:</span>
+                            <span id="status" class="status-value">Inactive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h3>Live Demo</h3>
+                    <div class="demo-grid">
+                        <div class="demo-item">
+                            <strong>new Date():</strong>
+                            <span id="demoNewDate"></span>
+                        </div>
+                        <div class="demo-item">
+                            <strong>Date.now():</strong>
+                            <span id="demoDateNow"></span>
+                        </div>
+                        <div class="demo-item">
+                            <strong>toLocaleString():</strong>
+                            <span id="demoLocaleString"></span>
+                        </div>
+                        <div class="demo-item">
+                            <strong>toISOString():</strong>
+                            <span id="demoISOString"></span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Help Modal -->
+            <div id="helpModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Date Format Examples</h3>
+                        <button class="close-btn" id="closeHelp">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="format-examples">
+                            <div class="example">
+                                <code>2025-04-27 12:40</code>
+                                <span>Local time</span>
+                            </div>
+                            <div class="example">
+                                <code>2025-04-27</code>
+                                <span>Midnight UTC</span>
+                            </div>
+                            <div class="example">
+                                <code>2025-03-30 00:59:55</code>
+                                <span>With seconds</span>
+                            </div>
+                            <div class="example">
+                                <code>2025-04-27T12:40Z</code>
+                                <span>UTC time</span>
+                            </div>
+                            <div class="example">
+                                <code>2025-04-27T12:40+1130</code>
+                                <span>With timezone offset</span>
+                            </div>
+                            <div class="example">
+                                <code>1731493140025</code>
+                                <span>UNIX timestamp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Modal -->
+            <div id="errorModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Error</h3>
+                        <button class="close-btn" id="closeError">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

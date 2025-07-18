@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Time Travel Demo</title>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+
+    <body>
+        <main>
+            <h3>Current JavaScript Date & Time</h3>
+            <h4>Date</h4>
+            <p id="now"></p>
+            <h4>Intl.DateTimeFormat</h4>
+            <p id="nowIntl"></p>
+
+            <script>
+                setInterval(() => {
+                    document.getElementById('now').textContent = new Date().toString()
+                    document.getElementById('nowIntl').textContent = new Intl.DateTimeFormat('en-US', {
+                        dateStyle: 'full',
+                        timeStyle: 'long',
+                    }).format()
+                }, 1000)
+            </script>
+        </main>
+    </body>
+</html>

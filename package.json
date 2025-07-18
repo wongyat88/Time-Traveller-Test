@@ -1,0 +1,37 @@
+{
+    "name": "time-travel",
+    "version": "2.1.1",
+    "license": "MIT",
+    "private": "true",
+    "scripts": {
+        "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide && sh ./util/build.sh production",
+        "build-win": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide && node util/build.js production",
+        "dev": "sh ./util/build.sh dev",
+        "lint": "tsc && eslint *.mts src/ && prettier src --check && svelte-check --tsconfig ./tsconfig.json",
+        "prettier": "prettier src --write",
+        "test": "vitest --run",
+        "checkall": "pnpm test && pnpm lint && pnpm build",
+        "machine-translate": "inlang machine translate --project project.inlang"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.3",
+        "@tsconfig/svelte": "^5.0.4",
+        "@types/chrome": "^0.0.319",
+        "chrome-webstore-upload-cli": "^3.3.1",
+        "eslint": "^9.26.0",
+        "happy-dom": "^17.4.6",
+        "prettier": "^3.5.3",
+        "svelte-check": "^4.1.7",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.31.1",
+        "vite": "^6.3.4",
+        "vitest": "^3.1.2",
+        "web-ext": "^8.6.0",
+        "@inlang/paraglide-js": "^2.0.12",
+        "@inlang/cli": "^3.0.11"
+    },
+    "dependencies": {
+        "@svelte-plugins/datepicker": "^1.0.11",
+        "svelte": "^5.28.2"
+    }
+}

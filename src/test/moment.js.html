@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Time and Date Demo</title>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+
+    <body>
+        <div>
+            <h3>moment.js compatibility test</h3>
+            <p>
+                moment():
+                <span id="moment"></span>
+            </p>
+            <p>
+                endOf("day"):
+                <span id="moment-end-of-day"></span>
+            </p>
+            <script>
+                document.getElementById('moment').textContent = moment()
+                document.getElementById('moment-end-of-day').textContent = moment().endOf('day')
+            </script>
+        </div>
+    </body>
+</html>

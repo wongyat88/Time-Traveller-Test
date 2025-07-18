@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Time Travel API Test</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 700px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .container {
+                background: white;
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #333;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+            .status-panel {
+                background-color: #e9ecef;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border-left: 4px solid #007bff;
+            }
+            .status-panel.error {
+                border-left-color: #dc3545;
+                background-color: #f8d7da;
+            }
+            .status-panel.success {
+                border-left-color: #28a745;
+                background-color: #d4edda;
+            }
+            .form-group {
+                margin-bottom: 20px;
+            }
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: bold;
+                color: #555;
+            }
+            input[type='datetime-local'] {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                font-size: 16px;
+                box-sizing: border-box;
+            }
+            input[type='datetime-local']:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 15px 0;
+            }
+            input[type='checkbox'] {
+                width: 20px;
+                height: 20px;
+            }
+            .preset-buttons {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .preset-btn {
+                background-color: #6c757d;
+                color: white;
+                padding: 12px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.2s;
+            }
+            .preset-btn:hover {
+                background-color: #545b62;
+            }
+            .action-buttons {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 20px;
+            }
+            .btn {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                transition: all 0.2s;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                color: white;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+            .btn-danger {
+                background-color: #dc3545;
+                color: white;
+            }
+            .btn-danger:hover {
+                background-color: #c82333;
+            }
+            .btn-secondary {
+                background-color: #6c757d;
+                color: white;
+            }
+            .btn-secondary:hover {
+                background-color: #545b62;
+            }
+            .btn-success {
+                background-color: #28a745;
+                color: white;
+            }
+            .btn-success:hover {
+                background-color: #218838;
+            }
+            .current-state {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 6px;
+                margin: 20px 0;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                border: 1px solid #dee2e6;
+            }
+            .log {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 6px;
+                margin-top: 20px;
+                max-height: 200px;
+                overflow-y: auto;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                border: 1px solid #dee2e6;
+            }
+            .log-entry {
+                margin-bottom: 5px;
+                padding: 2px 0;
+            }
+            .log-entry.success {
+                color: #28a745;
+            }
+            .log-entry.error {
+                color: #dc3545;
+            }
+            .log-entry.info {
+                color: #007bff;
+            }
+            .log-entry.warning {
+                color: #ffc107;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🕒 Time Travel Extension API Test</h1>
+
+            <div id="statusPanel" class="status-panel">
+                <strong>Extension Status:</strong> <span id="extensionStatus">Checking...</span>
+            </div>
+
+            <div class="current-state">
+                <strong>Current Extension State:</strong><br />
+                <div id="currentState">Loading...</div>
+            </div>
+
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="setPreset('christmas')">🎄 Christmas 2023</button>
+                <button class="preset-btn" onclick="setPreset('newyear')">🎆 New Year 2024</button>
+                <button class="preset-btn" onclick="setPreset('past')">📅 Past (2020)</button>
+                <button class="preset-btn" onclick="setPreset('future')">🚀 Future (2025)</button>
+                <button class="preset-btn" onclick="setPreset('now')">⏰ Current Time</button>
+            </div>
+
+            <form id="timeTravelForm">
+                <div class="form-group">
+                    <label for="fakeDate">Custom Date & Time:</label>
+                    <input type="datetime-local" id="fakeDate" name="fakeDate" required />
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="isClockStopped" name="isClockStopped" checked />
+                    <label for="isClockStopped">Stop Clock (Freeze Time)</label>
+                </div>
+                <small style="color: #666; margin-left: 30px">
+                    Uncheck to let the clock continue ticking from the set time
+                </small>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">🚀 Apply Time Travel</button>
+                    <button type="button" id="disableBtn" class="btn btn-danger">❌ Disable</button>
+                    <button type="button" id="refreshBtn" class="btn btn-secondary">🔄 Refresh</button>
+                    <button type="button" id="recheckBtn" class="btn btn-success">🔍 Re-check Extension</button>
+                </div>
+            </form>
+
+            <div class="log">
+                <strong>Activity Log:</strong>
+                <div id="logContainer"></div>
+            </div>
+        </div>
+
+        <script src="time-travel-api.js"></script>
+        <script>
+            // Initialize API
+            const api = new TimeTravelAPI()
+
+            // DOM elements
+            const statusPanel = document.getElementById('statusPanel')
+            const extensionStatus = document.getElementById('extensionStatus')
+            const currentState = document.getElementById('currentState')
+            const form = document.getElementById('timeTravelForm')
+            const fakeDateInput = document.getElementById('fakeDate')
+            const isClockStoppedCheckbox = document.getElementById('isClockStopped')
+            const disableBtn = document.getElementById('disableBtn')
+            const refreshBtn = document.getElementById('refreshBtn')
+            const recheckBtn = document.getElementById('recheckBtn')
+            const logContainer = document.getElementById('logContainer')
+
+            // Set default datetime to now
+            const now = new Date()
+            const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+            fakeDateInput.value = localDateTime
+
+            // Logging function
+            function log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString()
+                const logEntry = document.createElement('div')
+                logEntry.className = `log-entry ${type}`
+                logEntry.textContent = `[${timestamp}] ${message}`
+                logContainer.appendChild(logEntry)
+                logContainer.scrollTop = logContainer.scrollHeight
+            }
+
+            // Update status display
+            function updateStatus(isAvailable, message) {
+                if (isAvailable) {
+                    statusPanel.className = 'status-panel success'
+                    extensionStatus.textContent = '✅ ' + message
+                } else {
+                    statusPanel.className = 'status-panel error'
+                    extensionStatus.textContent = '❌ ' + message
+                }
+            }
+
+            // Update current state display
+            async function updateCurrentState() {
+                try {
+                    const response = await api.getGlobalState()
+                    const state = response.globalState
+
+                    if (state.isGlobalEnabled && state.fakeDate) {
+                        const fakeDate = new Date(state.fakeDate)
+                        const clockStatus = state.isClockStopped ? '⏸️ Stopped' : '▶️ Running'
+
+                        currentState.innerHTML = `
+                        ✅ <strong>ENABLED</strong><br>
+                        📅 Fake Date: ${fakeDate.toLocaleString()}<br>
+                        ⏰ Clock: ${clockStatus}<br>
+                        🆔 Tick Start: ${state.tickStartTimestamp || 'N/A'}<br>
+                        🔄 Last Updated: ${new Date().toLocaleTimeString()}
+                    `
+                        log('State updated successfully', 'success')
+                    } else {
+                        currentState.innerHTML = `
+                        ❌ <strong>DISABLED</strong><br>
+                        📅 No fake date set<br>
+                        🔄 Last Checked: ${new Date().toLocaleTimeString()}
+                    `
+                        log('Extension is disabled', 'warning')
+                    }
+                } catch (error) {
+                    currentState.innerHTML = `
+                    ❌ <strong>ERROR</strong><br>
+                    🚨 ${error.message}<br>
+                    🔄 Last Checked: ${new Date().toLocaleTimeString()}
+                `
+                    log(`Error getting state: ${error.message}`, 'error')
+                }
+            }
+
+            // Preset functions
+            function setPreset(type) {
+                let date,
+                    isClockStopped = true
+
+                switch (type) {
+                    case 'christmas':
+                        date = '2023-12-25T12:00:00.000Z'
+                        break
+                    case 'newyear':
+                        date = '2024-01-01T00:00:00.000Z'
+                        break
+                    case 'past':
+                        date = '2020-01-01T09:00:00.000Z'
+                        break
+                    case 'future':
+                        date = '2025-12-31T23:59:59.000Z'
+                        break
+                    case 'now':
+                        date = new Date().toISOString()
+                        isClockStopped = false
+                        break
+                }
+
+                // Update form
+                const localDateTime = new Date(date).toISOString().slice(0, 16)
+                fakeDateInput.value = localDateTime
+                isClockStoppedCheckbox.checked = isClockStopped
+
+                log(`Preset "${type}" selected: ${new Date(date).toLocaleString()}`, 'info')
+
+                // Apply immediately
+                applyTimeTravel(date, isClockStopped)
+            }
+
+            // Apply time travel function
+            async function applyTimeTravel(fakeDate, isClockStopped) {
+                try {
+                    log('Applying time travel settings...', 'info')
+
+                    await api.updateGlobalState(fakeDate, isClockStopped)
+
+                    log('✅ Time travel settings applied successfully!', 'success')
+                    await updateCurrentState()
+                } catch (error) {
+                    log(`❌ Error: ${error.message}`, 'error')
+                }
+            }
+
+            // Form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault()
+
+                const fakeDate = fakeDateInput.value
+                const isClockStopped = isClockStoppedCheckbox.checked
+
+                if (!fakeDate) {
+                    log('Please select a date and time', 'error')
+                    return
+                }
+
+                await applyTimeTravel(fakeDate, isClockStopped)
+            })
+
+            // Disable button
+            disableBtn.addEventListener('click', async () => {
+                try {
+                    log('Disabling time travel...', 'info')
+
+                    await api.disable()
+
+                    log('✅ Time travel disabled successfully!', 'success')
+                    await updateCurrentState()
+                } catch (error) {
+                    log(`❌ Error: ${error.message}`, 'error')
+                }
+            })
+
+            // Refresh button
+            refreshBtn.addEventListener('click', async () => {
+                try {
+                    log('Refreshing state...', 'info')
+                    await updateCurrentState()
+                    log('✅ State refreshed!', 'success')
+                } catch (error) {
+                    log(`❌ Error: ${error.message}`, 'error')
+                }
+            })
+
+            // Re-check extension button
+            recheckBtn.addEventListener('click', async () => {
+                try {
+                    log('Re-checking extension availability...', 'info')
+                    const isAvailable = await api.recheckAvailability()
+
+                    if (isAvailable) {
+                        updateStatus(true, 'Extension detected and ready!')
+                        log('✅ Extension is available', 'success')
+                        await updateCurrentState()
+                    } else {
+                        updateStatus(false, 'Extension not detected')
+                        log('❌ Extension not available', 'error')
+                    }
+                } catch (error) {
+                    updateStatus(false, 'Error checking extension')
+                    log(`❌ Error: ${error.message}`, 'error')
+                }
+            })
+
+            // Initialize
+            async function initialize() {
+                log('Initializing Time Travel API test...', 'info')
+
+                // Wait a bit for the extension to load
+                setTimeout(async () => {
+                    const isAvailable = await api.recheckAvailability()
+
+                    if (isAvailable) {
+                        updateStatus(true, 'Extension detected and ready!')
+                        log('✅ Extension is available', 'success')
+                        await updateCurrentState()
+                    } else {
+                        updateStatus(false, 'Extension not detected - try clicking "Re-check Extension"')
+                        log('⚠️ Extension not detected initially', 'warning')
+                    }
+                }, 1000)
+            }
+
+            // Start initialization
+            initialize()
+
+            // Auto-refresh state every 10 seconds
+            setInterval(() => {
+                if (api.isAvailable()) {
+                    updateCurrentState()
+                }
+            }, 10000)
+        </script>
+    </body>
+</html>
