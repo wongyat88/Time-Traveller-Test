@@ -10,7 +10,7 @@ if (MODE !== 'production' && MODE !== 'dev') {
 }
 
 const ROOT = path.resolve(__dirname, '..')
-const VERSION = '2.1.8'
+const VERSION = '9.0.0'
 const LONG_VERSION = MODE === 'dev' ? `${VERSION}-dev` : VERSION
 
 console.log(`Building Time Travel Extension - Mode: ${MODE}, Version: ${LONG_VERSION}`)
@@ -50,11 +50,28 @@ if (fs.existsSync('src/_locales')) {
     fs.cpSync('src/_locales', 'dist/chrome/_locales', { recursive: true })
 }
 
-// Create manifest.json with version substitution
+// Load allowed URLs configuration
+const allowedUrlsConfig = JSON.parse(fs.readFileSync('src/config/allowedUrls.json', 'utf8'))
+const allowedUrlsForManifest = allowedUrlsConfig.allowedUrls.map((url) => url.replace(/\/$/, '/*'))
+
+// Generate allowedUrls.ts from configuration (before vite build)
+const allowedUrlsTsContent = `// This file is auto-generated during build. Do not edit manually.
+// Generated from src/config/allowedUrls.json
+// ! DO UPDATE ON src/config/allowedUrls.json !!!!!!!!
+
+export const allowedUrls: string[] = ${JSON.stringify(allowedUrlsConfig.allowedUrls, null, 4)};
+`
+fs.writeFileSync('src/config/allowedUrls.ts', allowedUrlsTsContent)
+
+// Create manifest.json with version and URL substitution
 let manifestContent = fs.readFileSync('src/manifest.json', 'utf8')
 manifestContent = manifestContent.replace(/__VERSION_NAME__/g, LONG_VERSION)
 manifestContent = manifestContent.replace(/__VERSION__/g, VERSION)
+manifestContent = manifestContent.replace(/__ALLOWED_URLS_MANIFEST__/g, JSON.stringify(allowedUrlsForManifest))
 fs.writeFileSync('dist/chrome/manifest.json', manifestContent)
+
+// Generate filterList.json from configuration
+fs.writeFileSync('dist/chrome/filterList.json', JSON.stringify(allowedUrlsConfig.allowedUrls, null, 2))
 
 console.log('================== Firefox build ==================')
 

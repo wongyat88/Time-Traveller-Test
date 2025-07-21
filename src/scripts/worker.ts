@@ -1,9 +1,13 @@
+import { allowedUrls } from '../config/allowedUrls.js'
 import { registerContentScript } from '../util/browser'
 import { getContentScriptState, setBadgeAndTitle, type ActivationMessage } from '../util/common'
 import { getGlobalState, setGlobalState } from '../util/storage'
 
 // Track all tabs that have content scripts active
 const activeTabs = new Set<number>()
+
+// Track tabs that have been reloaded to prevent infinite reloading
+const reloadedTabs = new Set<number>()
 
 // Handle extension startup
 chrome.runtime.onStartup.addListener(() => {
@@ -58,6 +62,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     activeTabs.delete(tabId)
+    reloadedTabs.delete(tabId)
 })
 
 chrome.runtime.onMessage.addListener((message: ActivationMessage | { msg: 'getGlobalState' } | { msg: 'reapplyGlobalState' } | { msg: 'updateGlobalStateFromAPI', fakeDate: string, isClockStopped?: boolean }, sender, sendResponse) => {
@@ -110,6 +115,10 @@ chrome.runtime.onMessage.addListener((message: ActivationMessage | { msg: 'getGl
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.timeTravelGlobalState) {
         console.log('Time Travel: Global state changed, applying to all tabs')
+
+        // Clear reload tracking when global state changes so tabs can be reloaded again if needed
+        reloadedTabs.clear()
+
         void applyGlobalStateToAllTabs()
     }
 })
@@ -134,6 +143,18 @@ async function applyGlobalStateToTab(tabId: number) {
         }
 
         console.log(`Time Travel: Applying global state to tab ${tabId} (${tab.url})`)
+
+        // Check if we need to reload this tab for first-time time travel application
+        // This is necessary because the website's JS executes before our extension can inject the fake date
+        // By reloading, we ensure the fake date is in session storage before any page scripts run
+        if (globalState.isGlobalEnabled && globalState.fakeDate && !reloadedTabs.has(tabId)) {
+            console.log(`Time Travel: First load detected for tab ${tabId}, triggering reload to apply fake date`)
+            reloadedTabs.add(tabId)
+
+            // Reload the tab so that the fake date is available from the very beginning
+            await chrome.tabs.reload(tabId)
+            return // Exit early, the reload will trigger this function again
+        }
 
         // Inject the global state into the tab's session storage.
         // This must run at document_start in the MAIN world to be effective before any page scripts.
@@ -185,20 +206,10 @@ function isRestrictedUrl(url: string): boolean {
     return restrictedProtocols.some(protocol => url.startsWith(protocol))
 }
 
+
 // Check if URL matches the allowed website patterns
 function isAllowedWebsite(url: string): boolean {
-    const allowedPatterns = [
-        'http://mdpvres/',
-        'http://mdpv2/imma/',
-        'http://r2drill3:9090/apar5/',
-        'http://swirlsa/',
-        'http://swirlsa:8080/',
-        'http://swirlsa1:8080/',
-        'http://aamc-mon-01b/',
-        'http://r2drill3:82/tctool/Anemogram_TC/',
-        'http://r2drill3:82/tctool/dvorak/',
-        'http://192.168.143.64/wxsim_data/',
-    ]
+    const allowedPatterns = allowedUrls
 
     return allowedPatterns.some(pattern => url.startsWith(pattern))
 }
