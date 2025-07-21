@@ -13,4 +13,4 @@ export const allowedUrls: string[] = [
     "http://r2drill3:82/tctool/Anemogram_TC/",
     "http://r2drill3:82/tctool/dvorak/",
     "http://192.168.143.64/wxsim_data/"
-]
+];

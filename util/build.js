@@ -10,7 +10,7 @@ if (MODE !== 'production' && MODE !== 'dev') {
 }
 
 const ROOT = path.resolve(__dirname, '..')
-const VERSION = '9.0.0'
+const VERSION = '9.0.1'
 const LONG_VERSION = MODE === 'dev' ? `${VERSION}-dev` : VERSION
 
 console.log(`Building Time Travel Extension - Mode: ${MODE}, Version: ${LONG_VERSION}`)
